@@ -48,14 +48,13 @@ HAVING total_orders_p_client = 1
 /*
 6 - Average review score per product category, ranked best to worst
 */
-
 SELECT products.product_category_name, AVG(order_review.review_score) as Score_Cat
-  FROM `project-olist-496723.olist.orders` orders
-INNER JOIN `project-olist-496723.olist.order_reviews` order_review
+  FROM `olist.orders` orders
+INNER JOIN `olist.order_reviews` order_review
 ON orders.order_id = order_review.order_id
-INNER JOIN `project-olist-496723.olist.order_items` order_items
+INNER JOIN `olist.order_items` order_items
 ON order_review.order_id = order_items.order_id
-INNER JOIN `project-olist-496723.olist.products` products
+INNER JOIN `olist.products` products
 ON order_items.product_id = products.product_id
 GROUP BY products.product_category_name
 ORDER BY Score_Cat DESC
