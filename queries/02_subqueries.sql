@@ -18,3 +18,19 @@ AND customers.customer_city IN (
 )
 GROUP BY
     orders.customer_id, customers.customer_city
+
+/*
+ 2 - All orders where the payment value is above the overall average payment value.
+*/
+SELECT orders.order_id
+    FROM `olist.orders` orders
+INNER JOIN
+    `order_payments` order_pay
+ON
+orders.order_id = order_pay.order_id
+WHERE order_pay.payment_value > (
+    SELECT
+        AVG(order_pay.payment_value) as prom_payment_value
+    FROM
+    `olist.order_payments` order_pay
+)
