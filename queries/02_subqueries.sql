@@ -34,3 +34,44 @@ WHERE order_pay.payment_value > (
     FROM
     `olist.order_payments` order_pay
 )
+
+/* 3. For each order, show order id, payment value, and the overall average payment value as a separate column. */
+
+SELECT
+  order_pay.order_id,
+  order_pay.payment_value,
+  (
+    SELECT AVG(payment_value)
+    FROM `olist.order_payments`
+  ) AS AveragePayment
+FROM `olist.order_payments` order_pay
+
+/* 4 - Average number of items per order, from delivered orders only. */
+
+SELECT
+  AVG(items_per_order.item_count) AS AverageItemsPerOrder
+FROM
+  (
+    SELECT COUNT(order_items.product_id) as item_count
+    FROM `olist.orders` orders
+    INNER JOIN `order_items` order_items
+      ON orders.order_id = order_items.order_id
+    WHERE orders.order_status = "delivered"
+    GROUP BY order_items.order_id
+  ) AS items_per_order
+
+
+/* 5 - For each seller, show their total revenue only if it exceeds the average revenue of all sellers.. */
+SELECT seller_id, SUM(price) AS total_revenue
+FROM `olist.order_items` order_items
+GROUP BY seller_id
+HAVING
+  total_revenue > (
+    SELECT AVG(seller_total)
+    FROM
+      (
+        SELECT SUM(price) AS seller_total
+        FROM `olist.order_items`
+        GROUP BY seller_id
+      )
+  )
