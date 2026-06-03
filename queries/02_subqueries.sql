@@ -62,6 +62,7 @@ FROM
 
 
 /* 5 - For each seller, show their total revenue only if it exceeds the average revenue of all sellers.. */
+
 SELECT seller_id, SUM(price) AS total_revenue
 FROM `olist.order_items` order_items
 GROUP BY seller_id
